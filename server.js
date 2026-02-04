@@ -30,21 +30,19 @@ client.once('ready', () => {
 app.post('/speak', async (req, res) => {
   const { text } = req.body;
   try {
-    const response = await axios.get(ttsUrl, {
-      params: { text: text, speaker_id: 'Rebecca', style_id: '' },
+    const form = new FormData();
+    form.append('text', text);
+
+    const response = await axios.post(ttsUrl, form, {
+      headers: form.getHeaders(),
       responseType: 'arraybuffer'
     });
 
-    const stream = Readable.from(Buffer.from(response.data));
-    //const resource = createAudioResource(Buffer.from(response.data));
-    const resource = createAudioResource(stream, {
-        inputType: StreamType.Arbitrary, // This tells prism-media to figure it out
-    });
-
+    const resource = createAudioResource(Buffer.from(response.data));
     player.play(resource);
     res.send({ status: 'speaking' });
   } catch (err) {
-    console.error(err);
+    console.error('TTS Error:', err.response?.data?.toString() || err.message);
     res.status(500).send(err.message);
   }
 });
