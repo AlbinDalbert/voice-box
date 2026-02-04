@@ -2,6 +2,7 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
 const axios = require('axios');
 const express = require('express');
+require('libsodium-wrappers');
 
 const app = express();
 app.use(express.json());
@@ -16,7 +17,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 let connection;
 const player = createAudioPlayer();
 
-client.on('ready', () => {
+client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}`);
   connection = joinVoiceChannel({
     channelId: channelId,
@@ -34,7 +35,12 @@ app.post('/speak', async (req, res) => {
       responseType: 'arraybuffer'
     });
 
-    const resource = createAudioResource(Buffer.from(response.data));
+    const stream = Readable.from(Buffer.from(response.data));
+    //const resource = createAudioResource(Buffer.from(response.data));
+    const resource = createAudioResource(stream, {
+        inputType: StreamType.Arbitrary, // This tells prism-media to figure it out
+    });
+
     player.play(resource);
     res.send({ status: 'speaking' });
   } catch (err) {

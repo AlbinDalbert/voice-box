@@ -2,20 +2,20 @@ FROM node:20-slim
 
 RUN apt-get update && apt-get install -y \
     ffmpeg \
-    libopus0 \
     python3 \
-    build-essential \
+    make \
+    g++ \
+    gcc \
+    libc-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install --omit=dev
+RUN npm install
 
-COPY server.js .
+COPY . .
 
 EXPOSE 8080
-
-USER node
 
 CMD ["node", "server.js"]
