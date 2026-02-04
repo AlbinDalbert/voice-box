@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sentia-voice-box
+  namespace: openclaw
+  labels:
+    app: sentia-voice-box
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentia-voice-box
+  template:
+    metadata:
+      labels:
+        app: sentia-voice-box
+    spec:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      containers:
+        - name: voice-box
+          image: voice-box:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DISCORD_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: sentia-voice-box-secret
+                  key: discord-token
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
