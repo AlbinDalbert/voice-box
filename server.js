@@ -2,7 +2,6 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
 const axios = require('axios');
 const express = require('express');
-require('libsodium-wrappers');
 
 const app = express();
 app.use(express.json());
