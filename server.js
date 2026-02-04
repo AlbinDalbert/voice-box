@@ -2,6 +2,7 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
 const axios = require('axios');
 const express = require('express');
+const FormData = require('form-data');
 
 const app = express();
 app.use(express.json());
@@ -9,7 +10,7 @@ app.use(express.json());
 const token = process.env.DISCORD_TOKEN;
 const guildId = '1091808508497899612';
 const channelId = '1091808509571629101';
-const ttsUrl = 'http://coqui-tts-svc.default.svc.cluster.local/api/tts';
+const ttsUrl = 'http://coqui-tts-svc.default.svc.cluster.local/speak-text/Rebecca';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
 
