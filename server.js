@@ -23,6 +23,7 @@ client.once('ready', () => {
     channelId: channelId,
     guildId: guildId,
     adapterCreator: client.guilds.cache.get(guildId).voiceAdapterCreator,
+    selfDeaf: false,
   });
   connection.subscribe(player);
 });
